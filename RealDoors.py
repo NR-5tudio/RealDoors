@@ -97,16 +97,13 @@ class DoorObject:
         self.closed = False
         
     def Update(self, PlayerRefrence: PlayerCharacter):
+        game.draw_rectangle(int(self.x), int(self.y-270), 151, int(270), game.BLACK)
         if self.closed:
             game.draw_texture_ex(ClosedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
         else:
             game.draw_texture_ex(OpenedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
-        #game.draw_circle(int(self.x+(270/4)), self.y-270, 10, (255, 0, 0, 255))
-        game.draw_circle(self.x, self.y, 10, (255, 0, 0, 255))
-        game.draw_circle(self.x, self.y-(270), 10, (255, 0, 0, 255))
-        game.draw_circle(int(self.x+(260/2)), self.y-(270), 10, (255, 0, 0, 255))
-        game.draw_circle(int(self.x+(260/2)), self.y, 10, (255, 0, 0, 255))
-        if PlayerRefrence.x < int(self.x+(260/2)) and PlayerRefrence.x > self.x:
+        
+        if int(PlayerRefrence.x-25) < int(self.x+(260/2)) and int(PlayerRefrence.x+25) > self.x:
             if not self.closed:
                 game.draw_text("Close!", int(PlayerRefrence.x-(WindowWidth/3)), PlayerRefrence.y, 50, (255, 255, 255, 100))
             else:
@@ -117,27 +114,39 @@ class DoorObject:
             self.closed = True
         else:
             self.closed = False
+
+
+
+
+
 # BeginPlay
 Player = PlayerCharacter()
 RandomBoxes = []
+Doors = []
 for i in range(100):
     x = random.randint(int(-1*(WindowWidth/2)*2), int(WindowWidth/2*2))
     y = random.randint(-WindowHeight, 0)
     RandomBoxes.append({"x": x, "y": y})
 
-Door_Left = DoorObject(-400, 0)
+
+Doors.append(DoorObject(-400, 0))
+Doors.append(DoorObject(-150, 0))
+Doors.append(DoorObject(150, 0))
+Doors.append(DoorObject(400, 0))
+
 while not game.window_should_close():
     game.begin_drawing()
     game.clear_background((25, 25, 25, 255))
     game.begin_mode_2d(Player.camera)
 
-    Door_Left.Update(Player)
+    for Door in Doors:
+        Door.Update(Player)
 
     Player.Update()
     Player.Draw()
     Player.camera.rotation *= -1
     for box in RandomBoxes:
-        game.draw_rectangle(int(box["x"]), int(box["y"]), 5, 5, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255))
+        game.draw_rectangle(int(box["x"]), int(box["y"]), 5, 5, (random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), 255))
 
     game.end_mode_2d()
     game.end_drawing()

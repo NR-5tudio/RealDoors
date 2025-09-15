@@ -6,6 +6,14 @@
         "mode": "windowed",
         "camera_max_rotation": 1
     },
+    "keybinds":
+    {
+        "MoveLeft1": "a",
+        "MoveRight1": "d",
+        "MoveLeft2": "left",
+        "MoveRight2": "right",
+        "Close_Door": "left_shift"
+    },
     "Textures":
     {
         "OpenedDoor": "Door\\OpenedDoor.png",
