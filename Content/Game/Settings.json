@@ -1,0 +1,14 @@
+{
+    "window":
+    {
+        "width": 1500,
+        "height": 800,
+        "mode": "windowed",
+        "camera_max_rotation": 1
+    },
+    "Textures":
+    {
+        "OpenedDoor": "Door\\OpenedDoor.png",
+        "ClosedDoor": "Door\\ClosedDoor.png"
+    }
+}
