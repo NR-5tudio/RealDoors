@@ -21,7 +21,6 @@ elif str(Settings["window"]["mode"]) == "fullscreen":
     game.toggle_fullscreen()
 else:
     pass
-OpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\OpenedDoor.png")
 
 
 class PlayerCharacter:
@@ -77,7 +76,6 @@ class PlayerCharacter:
                 
         this_time = game.get_time()
         x_vel, y_vel = self.get_velocity()
-        #self.y = fc.smooth_oscillation(1*(x_vel/300), (3*((x_vel/300)*1.5)), game.get_time())
         
 
         
@@ -88,6 +86,37 @@ class PlayerCharacter:
         game.draw_rectangle_lines_ex(game.Rectangle(self.x-25-1, self.y-25-1, 52, 52), 5, (0, 0, 0, 255))
 
 
+
+
+OpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\OpenedDoor.png")
+HalfOpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\HalfOpenedDoor.png")
+ClosedDoorTexture = game.load_texture("Content\\Game\\Textures\\ClosedDoor.png")
+class DoorObject:
+    def __init__(self, x: int, y: int):
+        self.x, self.y = x, y
+        self.closed = False
+        
+    def Update(self, PlayerRefrence: PlayerCharacter):
+        if self.closed:
+            game.draw_texture_ex(ClosedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+        else:
+            game.draw_texture_ex(OpenedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+        #game.draw_circle(int(self.x+(270/4)), self.y-270, 10, (255, 0, 0, 255))
+        game.draw_circle(self.x, self.y, 10, (255, 0, 0, 255))
+        game.draw_circle(self.x, self.y-(270), 10, (255, 0, 0, 255))
+        game.draw_circle(int(self.x+(260/2)), self.y-(270), 10, (255, 0, 0, 255))
+        game.draw_circle(int(self.x+(260/2)), self.y, 10, (255, 0, 0, 255))
+        if PlayerRefrence.x < int(self.x+(260/2)) and PlayerRefrence.x > self.x:
+            if not self.closed:
+                game.draw_text("Close!", int(PlayerRefrence.x-(WindowWidth/3)), PlayerRefrence.y, 50, (255, 255, 255, 100))
+            else:
+                game.draw_text("Open!", int(PlayerRefrence.x-(WindowWidth/3)), PlayerRefrence.y, 50, (255, 255, 255, 255))
+
+
+        if PlayerRefrence.x < int(self.x+(260/2)) and PlayerRefrence.x > self.x and game.is_key_down(game.KeyboardKey.KEY_LEFT_SHIFT):
+            self.closed = True
+        else:
+            self.closed = False
 # BeginPlay
 Player = PlayerCharacter()
 RandomBoxes = []
@@ -96,11 +125,13 @@ for i in range(100):
     y = random.randint(-WindowHeight, 0)
     RandomBoxes.append({"x": x, "y": y})
 
-
+Door_Left = DoorObject(-400, 0)
 while not game.window_should_close():
     game.begin_drawing()
     game.clear_background((25, 25, 25, 255))
     game.begin_mode_2d(Player.camera)
+
+    Door_Left.Update(Player)
 
     Player.Update()
     Player.Draw()

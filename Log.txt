@@ -1,0 +1,4 @@
+Welcome!
+Here is the logs!
+were going to begin with:
+1 - Added Door (Close/Open) and GUI Hint logic
