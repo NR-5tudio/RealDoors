@@ -1,5 +1,6 @@
 import math
 import pyray as game
+import time
 def smooth_oscillation(speed=1.0, range_val=1.0, time=0.0):
     """
     Returns a smooth oscillation value between -range_val and range_val.
@@ -29,3 +30,8 @@ class Timer:
             return True
         else:
             return False
+def wait(seconds, delta_time):
+    
+    if time.time() - delta_time >= seconds:
+        return True
+    return False

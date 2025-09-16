@@ -12,7 +12,7 @@
         "MoveRight1": "d",
         "MoveLeft2": "left",
         "MoveRight2": "right",
-        "Close_Door": "left_shift"
+        "Close_Door": "space"
     },
     "Textures":
     {

@@ -3,6 +3,7 @@ import pyray as game
 import EasyJson as json
 import math
 import random
+import keyboard
 
 # Importing Custom Packages
 from Content.Plugins import Frequency as fc
@@ -10,6 +11,11 @@ from Content.Plugins import Frequency as fc
 # Importing Settings
 Settings = json.Load("Content\\Game\\Settings.json")
 WindowWidth, WindowHeight = Settings["window"]["width"], Settings["window"]["height"]
+MoveRight1 = Settings["keybinds"]["MoveRight1"]
+MoveRight2 = Settings["keybinds"]["MoveRight2"]
+MoveLeft1 = Settings["keybinds"]["MoveLeft1"]
+MoveLeft2 = Settings["keybinds"]["MoveLeft2"]
+Close_Door = Settings["keybinds"]["Close_Door"]
 
 # Creating Window
 game.init_window(WindowWidth, WindowHeight, "RealDoors")
@@ -64,9 +70,9 @@ class PlayerCharacter:
         prev_x, prev_y = self.x, self.y
         
         self.mouse_x, self.mouse_y = game.get_mouse_x(), game.get_mouse_y()
-        if game.is_key_down(game.KeyboardKey.KEY_D) or game.is_key_down(game.KeyboardKey.KEY_RIGHT):
+        if keyboard.is_pressed(MoveRight1) or keyboard.is_pressed(MoveRight2):
             self.x += self.speed
-        if game.is_key_down(game.KeyboardKey.KEY_A) or game.is_key_down(game.KeyboardKey.KEY_LEFT):
+        if keyboard.is_pressed(MoveLeft1) or keyboard.is_pressed(MoveLeft2):
             self.x -= self.speed
 
         self.camera.zoom += game.get_mouse_wheel_move() * 0.05
@@ -76,7 +82,9 @@ class PlayerCharacter:
                 
         this_time = game.get_time()
         x_vel, y_vel = self.get_velocity()
-        
+
+
+
 
         
 
@@ -84,6 +92,7 @@ class PlayerCharacter:
     def Draw(self):
         game.draw_rectangle(int(self.x-25), int(self.y-25), 50, 50, (255, 255, 255, 255))
         game.draw_rectangle_lines_ex(game.Rectangle(self.x-25-1, self.y-25-1, 52, 52), 5, (0, 0, 0, 255))
+        game.draw_text(f"{game.get_time():.2f}", int(self.x-(WindowWidth/3)), int(self.y-(WindowHeight/1.5)), 50, (255, 255, 255, 100))
 
 
 
@@ -92,9 +101,14 @@ OpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\OpenedDoor.png")
 HalfOpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\HalfOpenedDoor.png")
 ClosedDoorTexture = game.load_texture("Content\\Game\\Textures\\ClosedDoor.png")
 class DoorObject:
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, door_name):
         self.x, self.y = x, y
         self.closed = False
+        self.name = door_name
+        self.hm = False
+        self.HaveMonster = 0
+        self.monster_spawn_time = None  # Timer for monster spawn delay
+        self.wait_duration = 10  # Wait for 2 seconds (adjust as needed)
         
     def Update(self, PlayerRefrence: PlayerCharacter):
         game.draw_rectangle(int(self.x), int(self.y-270), 151, int(270), game.BLACK)
@@ -109,13 +123,31 @@ class DoorObject:
             else:
                 game.draw_text("Open!", int(PlayerRefrence.x-(WindowWidth/3)), PlayerRefrence.y, 50, (255, 255, 255, 255))
 
-
-        if PlayerRefrence.x < int(self.x+(260/2)) and PlayerRefrence.x > self.x and game.is_key_down(game.KeyboardKey.KEY_LEFT_SHIFT):
+        if int(PlayerRefrence.x-25) < int(self.x+(260/2)) and int(PlayerRefrence.x+25) > self.x and (keyboard.is_pressed(Close_Door)):
             self.closed = True
         else:
             self.closed = False
 
-
+        if self.hm == False:
+            self.HaveMonster = random.randint(0, 1000)
+            
+        if self.HaveMonster == 1:
+            if self.monster_spawn_time is None:  # First time monster spawns
+                print(f"SPAWN! at {self.name}")
+                self.monster_spawn_time = game.get_time()  # Start the timer
+                self.hm = True
+            
+            elif game.get_time() - self.monster_spawn_time >= self.wait_duration:
+                if self.closed:
+                    self.hm = False
+                    self.monster_spawn_time = None  # Reset timer for next spawn
+                    self.HaveMonster = 0  # Reset monster chance
+                    print("monster saw that the door is closed, and then left")
+                else:
+                    print(f"DIE!!!!!!!!!! from {self.name}")
+                    self.hm = False
+                    self.monster_spawn_time = None  # Reset timer
+                    self.HaveMonster = 0  # Reset monster chance
 
 
 
@@ -129,10 +161,10 @@ for i in range(100):
     RandomBoxes.append({"x": x, "y": y})
 
 
-Doors.append(DoorObject(-400, 0))
-Doors.append(DoorObject(-150, 0))
-Doors.append(DoorObject(150, 0))
-Doors.append(DoorObject(400, 0))
+#Doors.append(DoorObject(-400, 0, "far left door"))
+#Doors.append(DoorObject(-150, 0, "close left door"))
+#Doors.append(DoorObject(150, 0, "close right door"))
+Doors.append(DoorObject(400, 0, "far right door"))
 
 while not game.window_should_close():
     game.begin_drawing()
