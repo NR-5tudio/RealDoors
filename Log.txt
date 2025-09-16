@@ -1,6 +1,7 @@
-Welcome!
-Here is the logs!
-were going to begin with:
+# Welcome to LOG!
+here you will be able to see the updates.
+
+
 1 - Added Door (Close/Open) and GUI Hint logic.
 2 - Added a dark behined the doors.
 3 - Adding the monster logic (still not fixed)
