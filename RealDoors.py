@@ -161,9 +161,9 @@ for i in range(100):
     RandomBoxes.append({"x": x, "y": y})
 
 
-#Doors.append(DoorObject(-400, 0, "far left door"))
-#Doors.append(DoorObject(-150, 0, "close left door"))
-#Doors.append(DoorObject(150, 0, "close right door"))
+Doors.append(DoorObject(-400, 0, "far left door"))
+Doors.append(DoorObject(-150, 0, "close left door"))
+Doors.append(DoorObject(150, 0, "close right door"))
 Doors.append(DoorObject(400, 0, "far right door"))
 
 while not game.window_should_close():
