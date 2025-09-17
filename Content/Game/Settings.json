@@ -6,6 +6,12 @@
         "mode": "windowed",
         "camera_max_rotation": 1
     },
+    "audio":
+    {
+        "master volume": 100,
+        "music": 50,
+        "sounds": 100
+    },
     "keybinds":
     {
         "MoveLeft1": "a",

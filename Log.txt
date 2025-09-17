@@ -2,10 +2,13 @@
 here you will be able to see the updates.
 
 
-1 - Added Door (Close/Open) and GUI Hint logic.
-2 - Added a dark behined the doors.
-3 - Adding the monster logic (still not fixed)
-4 - Added KeyBinds and more settings!
-5 - Added a "timer" that shows you ur time record (the living longer, the winner)
-6 - Enhanced door logic (used 30% -> deepseek-r1, 70% -> NR)
-7 - Added Monster Logic inside the door (no 'texture' for the monster yet)
+1  - Added Door (Close/Open) and GUI Hint logic.
+2  - Added a dark behined the doors.
+3  - Adding the monster logic (still not fixed)
+4  - Added KeyBinds and more settings!
+5  - Added a "timer" that shows you ur time record (the living longer, the winner)
+6  - Enhanced door logic (used 30% -> deepseek-r1, 70% -> NR)
+7  - Added Monster Logic inside the door (no 'texture' for the monster yet)
+8  - Added two monsters (textures only for now): Nia + Ralf (their kids!)
+9  - Added better camera animation/smooth-movement
+10 - Updated the README

@@ -100,6 +100,9 @@ class PlayerCharacter:
 OpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\OpenedDoor.png")
 HalfOpenedDoorTexture = game.load_texture("Content\\Game\\Textures\\HalfOpenedDoor.png")
 ClosedDoorTexture = game.load_texture("Content\\Game\\Textures\\ClosedDoor.png")
+RalfDoorTexture = game.load_texture("Content\\Game\\Textures\\Ralf.png")
+NiaDoorTexture = game.load_texture("Content\\Game\\Textures\\Nia.png")
+Monsters = ["Ralf", "Nia"]
 class DoorObject:
     def __init__(self, x: int, y: int, door_name):
         self.x, self.y = x, y
@@ -109,14 +112,29 @@ class DoorObject:
         self.HaveMonster = 0
         self.monster_spawn_time = None  # Timer for monster spawn delay
         self.wait_duration = 10  # Wait for 2 seconds (adjust as needed)
+        self.monster = ""
         
     def Update(self, PlayerRefrence: PlayerCharacter):
         game.draw_rectangle(int(self.x), int(self.y-270), 151, int(270), game.BLACK)
         if self.closed:
             game.draw_texture_ex(ClosedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
         else:
-            game.draw_texture_ex(OpenedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+            if self.hm:
+                if self.monster == "Ralf":
+                    game.draw_texture_ex(RalfDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+                elif self.monster == "Nia":
+                    game.draw_texture_ex(NiaDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+                    
         
+                else:
+                    game.draw_texture_ex(NiaDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+    
+  
+            else:
+                game.draw_texture_ex(OpenedDoorTexture, game.Vector2(self.x, self.y-270), 0, 1, game.WHITE)
+        if not self.hm:
+            self.monster = random.choice(Monsters)
+
         if int(PlayerRefrence.x-25) < int(self.x+(260/2)) and int(PlayerRefrence.x+25) > self.x:
             if not self.closed:
                 game.draw_text("Close!", int(PlayerRefrence.x-(WindowWidth/3)), PlayerRefrence.y, 50, (255, 255, 255, 100))
@@ -129,20 +147,21 @@ class DoorObject:
             self.closed = False
 
         if self.hm == False:
-            self.HaveMonster = random.randint(0, 1000)
+            self.HaveMonster = random.randint(0, 5000)
             
-        if self.HaveMonster == 1:
+        if self.HaveMonster == 50 or self.HaveMonster == 40:
             if self.monster_spawn_time is None:  # First time monster spawns
                 print(f"SPAWN! at {self.name}")
                 self.monster_spawn_time = game.get_time()  # Start the timer
                 self.hm = True
-            
+
             elif game.get_time() - self.monster_spawn_time >= self.wait_duration:
                 if self.closed:
                     self.hm = False
                     self.monster_spawn_time = None  # Reset timer for next spawn
                     self.HaveMonster = 0  # Reset monster chance
                     print("monster saw that the door is closed, and then left")
+                    self.monster = ""
                 else:
                     print(f"DIE!!!!!!!!!! from {self.name}")
                     self.hm = False
@@ -170,15 +189,20 @@ while not game.window_should_close():
     game.begin_drawing()
     game.clear_background((25, 25, 25, 255))
     game.begin_mode_2d(Player.camera)
-
+    #game.begin_blend_mode(game.BlendMode.BLEND_SUBTRACT_COLORS)
     for Door in Doors:
         Door.Update(Player)
 
     Player.Update()
     Player.Draw()
     Player.camera.rotation *= -1
+    # Replace these circles with real point light
+    # Using (import pyray as game)
+    #game.draw_circle(Player.x, Player.y, 3000, (0, 0, 0, 100))
+    #game.draw_circle(Player.x, Player.y, 500, (255, 255, 255, 100))
+
     for box in RandomBoxes:
         game.draw_rectangle(int(box["x"]), int(box["y"]), 5, 5, (random.randint(0, 100), random.randint(0, 100), random.randint(0, 100), 255))
-
+    #game.end_blend_mode()
     game.end_mode_2d()
     game.end_drawing()
