@@ -13,7 +13,7 @@ Horror game, about Closing/Opening Door in the right time, and if u fail, you di
 - NR_5tudio
 
 # CopyRights:
-- © 2025 NR_5tudio. All rights reserved.
+- Was (© 2025 NR_5tudio. All rights reserved.) but now: (Anyone is free to copy/use/edit it.)
 
 
 
